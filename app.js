@@ -6,9 +6,11 @@ const express = require("express");
 //user authentication
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 //startDb and Server
 const app = express();
 app.use(express.json());
+app.use(cors());
 const dbPath = path.join(__dirname, "userData.db");
 let db = null;
 const initializeDbAndServer = async () => {
@@ -17,7 +19,7 @@ const initializeDbAndServer = async () => {
       filename: dbPath,
       driver: sqlite3.Database,
     });
-    app.listen(3000, () => {
+    app.listen(process.env.PORT || 3000, () => {
       console.log(`Server is Running at http://localhost:3000`);
     });
   } catch (e) {
@@ -150,6 +152,7 @@ app.post("/data", async (request, response) => {
       }
     }
   } catch (e) {
+    response.status(400);
     response.send({ error_msg: e });
   }
 });
